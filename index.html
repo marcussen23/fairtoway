@@ -152,6 +152,29 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0;display:flex;align-item
 @media(max-width:520px){
   footer{flex-direction:column;gap:.4rem;text-align:center;}
 }
+
+/* COOKIE BANNER */
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:999;background:#0e2616;border-top:1px solid rgba(242,237,228,.1);padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
+.cookie-banner p{font-size:.78rem;color:var(--cdim);line-height:1.6;margin:0;}
+.cookie-banner a{color:var(--brown-p);text-decoration:underline;cursor:pointer;}
+.cookie-accept{background:var(--brown);color:#fff;border:none;border-radius:8px;padding:.5rem 1.2rem;font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;white-space:nowrap;}
+.cookie-accept:hover{background:var(--brown-l);}
+
+/* PRIVACY MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.7);align-items:center;justify-content:center;padding:2rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:#122b18;border:1px solid rgba(242,237,228,.1);border-radius:18px;max-width:640px;width:100%;max-height:80vh;overflow-y:auto;padding:2.5rem;}
+.modal h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--cream);margin-bottom:1.5rem;}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;color:var(--cream);margin:1.4rem 0 .5rem;}
+.modal p{font-size:.85rem;color:var(--cdim);line-height:1.8;margin-bottom:.8rem;}
+.modal-close{display:block;margin-top:1.5rem;background:var(--brown);color:#fff;border:none;border-radius:8px;padding:.7rem 1.5rem;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:500;cursor:pointer;}
+.modal-close:hover{background:var(--brown-l);}
+
+/* CHECKBOX */
+.checkbox-group{display:flex;align-items:flex-start;gap:.7rem;margin-bottom:.85rem;}
+.checkbox-group input[type=checkbox]{width:16px;height:16px;min-width:16px;margin-top:2px;accent-color:var(--brown);cursor:pointer;background:none;}
+.checkbox-group label{font-size:.68rem;color:var(--cdim);line-height:1.5;cursor:pointer;}
+.checkbox-group label a{color:var(--brown-p);text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -178,13 +201,17 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0;display:flex;align-item
         <div class="fg"><label for="nm">Navn</label><input type="text" id="nm" placeholder="Dit fulde navn" autocomplete="name"></div>
         <div class="fg"><label for="em">Email</label><input type="email" id="em" placeholder="din@email.dk" autocomplete="email"></div>
         <div class="fg"><label for="cl">Hjemmeklub</label><input type="text" id="cl" placeholder="fx. Kokkedal Golfklub"></div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="consent" />
+          <label for="consent">Jeg accepterer FairToWays <a href="#" onclick="openPrivacy(event)">privatlivspolitik</a> og giver samtykke til at mine oplysninger behandles med henblik på at blive kontaktet ved lancering.</label>
+        </div>
         <button class="btn" onclick="sub()">Jeg vil have mere fleksibel golf →</button>
         <div class="form-note">Ingen binding · Ingen betaling · Vi skriver kun til dig ved vigtige opdateringer</div>
       </div>
       <div class="success" id="ok">
         <div class="success-icon">⛳</div>
         <h3>Du er med!</h3>
-      <p>Tak fordi du støtter op. Vi giver dig besked når vi er klar til at gå i dialog med klubberne.<br><br>Jo flere vi er, desto stærkere forhandler vi på jeres vegne.<br><br><span style="font-size:.75rem;color:rgba(242,237,228,0.4);">Tjek din spam-mappe hvis du ikke modtager en bekræftelsesmail.</span></p>
+        <p>Tak fordi du støtter op. Vi giver dig besked når vi er klar til at gå i dialog med klubberne.<br><br>Jo flere vi er, desto stærkere forhandler vi på jeres vegne.</p>
       </div>
     </div>
   </section>
@@ -339,11 +366,39 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0;display:flex;align-item
     <div class="fn">Kontakt: <a href="mailto:info@fairtoway.dk" style="color:var(--cdim);text-decoration:none;">info@fairtoway.dk</a></div>
   </footer>
 
+  <!-- COOKIE BANNER -->
+  <div class="cookie-banner" id="cookie-banner">
+    <p>Vi bruger Google Fonts på denne side. Ved at fortsætte accepterer du vores <a href="#" onclick="openPrivacy(event)">privatlivspolitik</a>.</p>
+    <button class="cookie-accept" onclick="acceptCookies()">Accepter</button>
+  </div>
+
+  <!-- PRIVACY MODAL -->
+  <div class="modal-overlay" id="privacy-modal" onclick="closePrivacyOutside(event)">
+    <div class="modal">
+      <h2>Privatlivspolitik</h2>
+      <h3>Hvad indsamler vi?</h3>
+      <p>FairToWay indsamler navn, email og hjemmeklub når du tilmelder dig vores waitlist.</p>
+      <h3>Hvorfor indsamler vi det?</h3>
+      <p>Vi bruger disse oplysninger til at kontakte dig når FairToWay lancerer og til at forstå hvilke golfklubber der er repræsenteret i vores community.</p>
+      <h3>Hvor gemmes dine data?</h3>
+      <p>Dine data opbevares sikkert hos Supabase (EU-servere) og deles ikke med tredjepart uden dit samtykke.</p>
+      <h3>Hvor længe gemmer vi dine data?</h3>
+      <p>Vi opbevarer dine data indtil FairToWay lancerer eller indtil du beder om at blive slettet.</p>
+      <h3>Dine rettigheder</h3>
+      <p>Du kan til enhver tid bede om at få dine data slettet ved at sende en email til <a href="mailto:info@fairtoway.dk" style="color:var(--brown-p);">info@fairtoway.dk</a>. Du har ret til indsigt, berigtigelse og sletning af dine personoplysninger.</p>
+      <h3>Cookies og eksterne tjenester</h3>
+      <p>Denne hjemmeside bruger Google Fonts som indlæses fra Googles servere. For mere information om Googles datapolitik, se <a href="https://google.com/privacy" target="_blank" style="color:var(--brown-p);">google.com/privacy</a>.</p>
+      <h3>Kontakt</h3>
+      <p>Spørgsmål? Kontakt os på <a href="mailto:info@fairtoway.dk" style="color:var(--brown-p);">info@fairtoway.dk</a></p>
+      <button class="modal-close" onclick="closePrivacy()">Luk</button>
+    </div>
+  </div>
+
 </div>
 <script>
 async function sub(){
-  const consent = document.getElementById('consent').checked;
-  if (!consent) { alert('Du skal acceptere privatlivspolitikken for at tilmelde dig.'); return; }
+  const consent=document.getElementById('consent').checked;
+  if(!consent){alert('Du skal acceptere privatlivspolitikken for at tilmelde dig.');return;}
   const n=document.getElementById('nm').value.trim();
   const e=document.getElementById('em').value.trim();
   const c=document.getElementById('cl').value.trim();
@@ -369,6 +424,28 @@ async function sub(){
     btn.disabled=false;
   }
 }
+
+function acceptCookies() {
+  document.getElementById('cookie-banner').style.display = 'none';
+  localStorage.setItem('cookiesAccepted', 'true');
+}
+function openPrivacy(e) {
+  e.preventDefault();
+  document.getElementById('privacy-modal').classList.add('open');
+}
+function closePrivacy() {
+  document.getElementById('privacy-modal').classList.remove('open');
+}
+function closePrivacyOutside(e) {
+  if (e.target === document.getElementById('privacy-modal')) closePrivacy();
+}
+window.addEventListener('load', function() {
+  if (!localStorage.getItem('cookiesAccepted')) {
+    document.getElementById('cookie-banner').style.display = 'flex';
+  } else {
+    document.getElementById('cookie-banner').style.display = 'none';
+  }
+});
 </script>
 </body>
 </html>
