@@ -341,36 +341,32 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0;display:flex;align-item
 
 </div>
 <script>
-async function sub() {
-  const n = document.getElementById('nm').value.trim();
-  const e = document.getElementById('em').value.trim();
-  const c = document.getElementById('cl').value.trim();
-  if (!n || !e || !c) {
-    const m = [];
-    if (!n) m.push('navn');
-    if (!e) m.push('email');
-    if (!c) m.push('hjemmeklub');
-    alert('Udfyld venligst: ' + m.join(' og ')); return;
+async function sub(){
+  const consent = document.getElementById('consent').checked;
+  if (!consent) { alert('Du skal acceptere privatlivspolitikken for at tilmelde dig.'); return; }
+  const n=document.getElementById('nm').value.trim();
+  const e=document.getElementById('em').value.trim();
+  const c=document.getElementById('cl').value.trim();
+  if(!n||!e||!c){
+    const m=[];
+    if(!n)m.push('navn');
+    if(!e)m.push('email');
+    if(!c)m.push('hjemmeklub');
+    alert('Udfyld venligst: '+m.join(', '));return;
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { alert('Indtast en gyldig email.'); return; }
-  
-  const btn = document.querySelector('.btn');
-  btn.textContent = 'Sender...';
-  btn.disabled = true;
-
-  try {
-    const res = await fetch('/api/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: n, email: e, club: c })
-    });
-    if (!res.ok) throw new Error('Fejl');
-    document.getElementById('form-inner').style.display = 'none';
-    document.getElementById('ok').style.display = 'block';
-  } catch {
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){alert('Indtast en gyldig email.');return;}
+  const btn=document.querySelector('.btn');
+  btn.textContent='Sender...';
+  btn.disabled=true;
+  try{
+    const res=await fetch('/api/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,club:c})});
+    if(!res.ok)throw new Error('Fejl');
+    document.getElementById('form-inner').style.display='none';
+    document.getElementById('ok').style.display='block';
+  }catch{
     alert('Noget gik galt. Prøv igen.');
-    btn.textContent = 'Jeg vil have mere fleksibel golf →';
-    btn.disabled = false;
+    btn.textContent='Jeg vil have mere fleksibel golf →';
+    btn.disabled=false;
   }
 }
 </script>
